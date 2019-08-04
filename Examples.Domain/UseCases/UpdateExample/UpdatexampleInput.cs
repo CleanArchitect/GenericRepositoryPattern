@@ -1,6 +1,6 @@
 ﻿namespace Examples.Domain.UseCases
 {
-    public class UpdateExampleInput : IInput
+    public sealed class UpdateExampleInput : IInput
     {
         public int Id { get; set; }
         public string ExampleString { get; set; }

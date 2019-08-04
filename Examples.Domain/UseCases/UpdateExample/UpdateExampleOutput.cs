@@ -1,6 +1,6 @@
 ﻿namespace Examples.Domain.UseCases
 {
-    public class UpdateExampleOutput : IOutput
+    public sealed class UpdateExampleOutput : IOutput
     {
     }
 }

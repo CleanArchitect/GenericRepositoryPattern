@@ -1,33 +1,33 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Examples.Data
 {
-    public class ReadRepository<TEntity> : IReadRepository<TEntity> where TEntity : Entity
+    internal class ReadRepository<TEntity> : IReadRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly IDataContext context;
         private readonly IDataSet<TEntity> dataset;
 
         public ReadRepository(IDataContext context)
         {
-            this.context = context;
             this.dataset = context.Set<TEntity>();
         }
 
-        public TEntity Find(int key)
+        async Task<TEntity> IReadRepository<TEntity>.FindAsync(int key)
         {
-            return dataset.Find(key);
+            return await dataset.FindAsync(key);
         }
 
-        public IList<TEntity> GetAll()
+        async Task<IReadOnlyCollection<TEntity>> IReadRepository<TEntity>.GetAllAsync()
         {
-            return dataset.ToList();
+            return await dataset.GetAllAsync();
         }
 
-        public IQueryable<TEntity> Query()
+        async Task<IReadOnlyCollection<TEntity>> IReadRepository<TEntity>.FindAllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return dataset;
+            return await dataset.FindAllAsync(predicate);
         }
     }
 }

@@ -1,15 +1,15 @@
-﻿namespace Examples.Domain.UseCases
+﻿using System.Threading.Tasks;
+
+namespace Examples.Domain
 {
-    public interface IInput
-    {
-    }
+    public interface IInput { }
 
-    public interface IOutput
-    {
-    }
+    public interface IOutput { }
 
-    public interface IUseCase<in TInput, out TOutput> where TInput : IInput where TOutput : IOutput
+    public interface IUseCase { }
+
+    public interface IUseCase<in TInput, TOutput> : IUseCase where TInput : IInput where TOutput : IOutput
     {
-        TOutput Execute(TInput input);
+        Task<TOutput> ExecuteAsync(TInput input);
     }
 }

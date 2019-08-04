@@ -1,8 +1,5 @@
-﻿using Examples.Data;
-using Examples.Domain.Queries;
-using Examples.Data.Entities;
-using Examples.UseCases.Shared;
-using System.Linq;
+﻿using Examples.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace Examples.Domain.UseCases
 {
@@ -10,7 +7,7 @@ namespace Examples.Domain.UseCases
     {
     }
 
-    public class GetExamplesUseCase : IGetExamplesUseCase
+    internal sealed class GetExamplesUseCase : IGetExamplesUseCase
     {
         private readonly IReadRepository<Example> exampleRepository;
 
@@ -19,17 +16,16 @@ namespace Examples.Domain.UseCases
             this.exampleRepository = exampleRepository;
         }
 
-        public GetExamplesOutput Execute(GetExamplesInput input)
+        public async Task<GetExamplesOutput> ExecuteAsync(GetExamplesInput input)
         {
             if (input.Id.HasValue)
-                return new GetExamplesOutput(exampleRepository.Find(input.Id.Value));
-
-            var examples = exampleRepository.Query()
-                .WithExampleString(input.ExampleString, StringOperator.Contains)
-                .WithExampleBoolean(input.ExampleBoolean)
-                .WithExampleInt(input.ExampleInt, IntOperator.GreaterThan)
-                .InPeriod(input.DatumVanaf, input.DatumTm)
-                .ToList();
+                return new GetExamplesOutput(await exampleRepository.FindAsync(input.Id.Value));
+            
+            var examples = await exampleRepository.FindAllAsync(example => 
+                example.HasExampleBoolean(input.ExampleBoolean) &&
+                example.HasExampleString(input.ExampleString) &&
+                example.HasExampleInt(input.ExampleInt) &&
+                example.IsComplete());
 
             return new GetExamplesOutput(examples);
         }

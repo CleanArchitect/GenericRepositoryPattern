@@ -1,13 +1,20 @@
-﻿using Examples.Data.Entities;
-using System.Linq;
+﻿using Examples.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Examples.Data
 {
-    public interface IDataSet<TEntity> : IQueryable<TEntity> where TEntity : IEntity
+    internal interface IDataSet<TEntity> where TEntity : BaseEntity
     {
-        TEntity Find(int id);
+        Task<TEntity> FindAsync(int id);
+
+        Task<IReadOnlyCollection<TEntity>> GetAllAsync();
+
+        Task<IReadOnlyCollection<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>> predicate);
         
-        void Add(TEntity entity);
+        Task AddAsync(TEntity entity);
 
         void Update(TEntity entity);
 

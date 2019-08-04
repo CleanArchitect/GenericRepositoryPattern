@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Examples.API
+namespace Examples.Presentation.API
 {
     public class Program
     {

@@ -1,6 +1,6 @@
-﻿using Examples.Data;
-using Examples.Data.Entities;
+﻿using Examples.Domain.Entities;
 using System;
+using System.Threading.Tasks;
 
 namespace Examples.Domain.UseCases
 {
@@ -8,7 +8,7 @@ namespace Examples.Domain.UseCases
     {
     }
 
-    public class UpdateExampleUseCase : IUpdateExampleUseCase
+    internal sealed class UpdateExampleUseCase : IUpdateExampleUseCase
     {
         private readonly IReadWriteRepository<Example> exampleRepository;
 
@@ -17,18 +17,16 @@ namespace Examples.Domain.UseCases
             this.exampleRepository = exampleRepository;
         }
 
-        public UpdateExampleOutput Execute(UpdateExampleInput input)
+        public async Task<UpdateExampleOutput> ExecuteAsync(UpdateExampleInput input)
         {
-            var existingExample = exampleRepository.Find(input.Id);
+            var existingExample = await exampleRepository.FindAsync(input.Id);
 
             if (existingExample == null)
                 throw new NullReferenceException($"Example met id '{input.Id}' niet gevonden.");
 
-            existingExample.ExampleString = input.ExampleString;
-            existingExample.ExampleInt = input.ExampleInt;
-            existingExample.ExampleBoolean = input.ExampleBoolean;
+            existingExample.Update(input);
 
-            exampleRepository.Update(existingExample);
+            await exampleRepository.UpdateAsync(existingExample);
 
             return new UpdateExampleOutput();
         }

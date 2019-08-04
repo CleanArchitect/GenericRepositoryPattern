@@ -1,11 +1,10 @@
-﻿using Examples.Data.Entities;
-using System;
+﻿using System;
 
-namespace Examples.Domain.Models
+namespace Examples.Domain.UseCases
 {
     public abstract class BaseModel
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string CreatedByUser { get; set; }
         
@@ -13,15 +12,15 @@ namespace Examples.Domain.Models
 
         public string ModifiedByUser { get; set; }
 
-        public DateTime DateLastModified { get; set; }
+        public DateTime? DateLastModified { get; set; }
 
         protected BaseModel(IEntity entity)
         {
-            this.Id = entity.Id;
-            this.CreatedByUser = entity.CreatedByUser;
-            this.DateCreated = entity.DateCreated.ToLocalTime();
-            this.ModifiedByUser = entity.ModifiedByUser;
-            this.DateLastModified = entity.DateLastModified.ToLocalTime();
+            Id = entity.Id;
+            CreatedByUser = entity.CreatedBy;
+            DateCreated = entity.DateCreated.ToLocalTime();
+            ModifiedByUser = entity.ModifiedBy;
+            DateLastModified = entity.DateModified?.ToLocalTime();
         }
     }
 }

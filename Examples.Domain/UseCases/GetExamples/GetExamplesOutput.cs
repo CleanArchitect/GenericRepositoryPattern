@@ -1,16 +1,20 @@
-﻿using Examples.Domain.Models;
-using Examples.Data.Entities;
+﻿using Examples.Domain.Entities;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Examples.Domain.UseCases
 {
-    public class GetExamplesOutput : IOutput
+    public sealed class GetExamplesOutput : IOutput
     {
         public List<ExampleModel> Examples { get; } = new List<ExampleModel>();
 
         public GetExamplesOutput(Example example)
         {
+            if (example == null)
+            {
+                return;
+            }
+
             Examples.Add(new ExampleModel(example));
         }
 

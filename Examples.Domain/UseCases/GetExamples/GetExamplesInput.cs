@@ -2,7 +2,7 @@
 
 namespace Examples.Domain.UseCases
 {
-    public class GetExamplesInput : IInput
+    public sealed class GetExamplesInput : IInput
     {
         public int? Id { get; set; }
 

@@ -1,43 +1,42 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain;
 using System;
-using System.Security.Principal;
+using System.Threading.Tasks;
 
 namespace Examples.Data
 {
-    public class ReadWriteRepository<TEntity> : ReadRepository<TEntity>, IReadWriteRepository<TEntity> where TEntity : Entity
+    internal sealed class ReadWriteRepository<TEntity> : ReadRepository<TEntity>, IReadWriteRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly IDataContext context;
-        private readonly IIdentity identity;
+        private readonly IAuthService authService;
 
-        public ReadWriteRepository(IDataContext context, IIdentity identity) : base (context)
+        public ReadWriteRepository(IDataContext context, IAuthService authService) : base (context)
         {
             this.context = context;
-            this.identity = identity;
+            this.authService = authService;
         }
 
-        public void Add(TEntity entity)
+        async Task IReadWriteRepository<TEntity>.AddAsync(TEntity entity)
         {            
             entity.DateCreated = DateTime.Now;
-            entity.DateLastModified = DateTime.Now;
-            entity.CreatedByUser = identity.Name;
+            entity.CreatedBy = authService.Identity.Name;
 
-            context.Set<TEntity>().Add(entity);
-            context.SaveChanges();
+            await context.Set<TEntity>().AddAsync(entity);
+            await context.SaveChangesAsync();
         }
 
-        public void Remove(TEntity entity)
+        async Task IReadWriteRepository<TEntity>.RemoveAsync(TEntity entity)
         {
             context.Set<TEntity>().Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Update(TEntity entity)
+        async Task IReadWriteRepository<TEntity>.UpdateAsync(TEntity entity)
         {
-            entity.DateLastModified = DateTime.Now;
-            entity.ModifiedByUser = identity.Name;
+            entity.DateModified = DateTime.Now;
+            entity.ModifiedBy = authService.Identity.Name;
 
             context.Set<TEntity>().Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

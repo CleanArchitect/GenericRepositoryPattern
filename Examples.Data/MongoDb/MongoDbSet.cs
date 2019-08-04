@@ -1,40 +1,38 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Examples.Data.MongoDb
 {
-    public class MongoDbSet<TEntity> : IDataSet<TEntity> where TEntity : Entity
+    internal sealed class MongoDbSet<TEntity> : IDataSet<TEntity> where TEntity : BaseEntity
     {
         private readonly IMongoCollection<TEntity> mongoCollection;
-
-        public Type ElementType => mongoCollection.AsQueryable().ToList().AsQueryable().ElementType;
-
-        public Expression Expression => mongoCollection.AsQueryable().ToList().AsQueryable().Expression;
-
-        public IQueryProvider Provider => mongoCollection.AsQueryable().ToList().AsQueryable().Provider;
 
         public MongoDbSet(IMongoCollection<TEntity> mongoCollection)
         {
             this.mongoCollection = mongoCollection;
         }
 
-        TEntity IDataSet<TEntity>.Find(int id)
+        async Task<TEntity> IDataSet<TEntity>.FindAsync(int id)
         {
-            return mongoCollection.Find(doc => doc.Id == id).SingleOrDefault();
+            return await mongoCollection.Find(doc => doc.Id == id).SingleOrDefaultAsync();
         }
 
-        void IDataSet<TEntity>.Add(TEntity entity)
+        async Task IDataSet<TEntity>.AddAsync(TEntity entity)
         {
-            var filter = Builders<TEntity>.Filter.Exists("_id");
+            var lastEntity = await mongoCollection
+                .AsQueryable()
+                .OrderByDescending(doc => doc.Id)
+                .FirstOrDefaultAsync();
 
-            entity.Id = mongoCollection.Find(filter).ToList().Max(x => x.Id) + 1;
+            entity.Id = lastEntity?.Id + 1 ?? 1;
 
-            mongoCollection.InsertOne(entity);
+            await mongoCollection.InsertOneAsync(entity);
         }
 
         void IDataSet<TEntity>.Update(TEntity entity)
@@ -47,14 +45,19 @@ namespace Examples.Data.MongoDb
             mongoCollection.DeleteOne(doc => doc.Id == entity.Id);
         }
 
-        public IEnumerator<TEntity> GetEnumerator()
+        async Task<IReadOnlyCollection<TEntity>> IDataSet<TEntity>.GetAllAsync()
         {
-            return mongoCollection.AsQueryable().ToList().AsQueryable().GetEnumerator();
+            return await ((IQueryable<TEntity>)mongoCollection.AsQueryable())
+                .ToAsyncEnumerable()
+                .ToArray();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        async Task<IReadOnlyCollection<TEntity>> IDataSet<TEntity>.FindAllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return GetEnumerator();
+            return await ((IQueryable<TEntity>)mongoCollection.AsQueryable())
+                .Where(predicate.Compile())
+                .ToAsyncEnumerable()
+                .ToArray();
         }
     }
 }

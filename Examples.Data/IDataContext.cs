@@ -1,11 +1,12 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain;
+using System.Threading.Tasks;
 
 namespace Examples.Data
 {
-    public interface IDataContext
+    internal interface IDataContext
     {
-        IDataSet<TEntity> Set<TEntity>() where TEntity : Entity;
+        IDataSet<TEntity> Set<TEntity>() where TEntity : BaseEntity;
 
-        void SaveChanges();
+        Task SaveChangesAsync();
     }
 }

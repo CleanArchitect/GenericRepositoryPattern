@@ -1,5 +1,5 @@
-﻿using Examples.Data;
-using Examples.Data.Entities;
+﻿using System.Threading.Tasks;
+using Examples.Domain.Entities;
 
 namespace Examples.Domain.UseCases
 {
@@ -7,7 +7,7 @@ namespace Examples.Domain.UseCases
     {
     }
 
-    public class AddExampleUseCase : IAddExampleUseCase
+    internal sealed class AddExampleUseCase : IAddExampleUseCase
     {
         private readonly IReadWriteRepository<Example> exampleRepository;
 
@@ -16,16 +16,11 @@ namespace Examples.Domain.UseCases
             this.exampleRepository = exampleRepository;
         }
 
-        public AddExampleOutput Execute(AddExampleInput input)
+        public async Task<AddExampleOutput> ExecuteAsync(AddExampleInput input)
         {
-            var newExample = new Example
-            {
-                ExampleString = input.ExampleString,
-                ExampleBoolean = input.ExampleBoolean,
-                ExampleInt = input.ExampleInt
-            };
-
-            exampleRepository.Add(newExample);
+            var newExample = new Example(input.ExampleString, input.ExampleBoolean, input.ExampleInt);
+            
+            await exampleRepository.AddAsync(newExample);
 
             return new AddExampleOutput(newExample);
         }

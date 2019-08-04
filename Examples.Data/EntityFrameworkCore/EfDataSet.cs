@@ -1,36 +1,30 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Examples.Data.EntityFrameworkCore
 {
-    public class EfDataSet<TEntity> : IDataSet<TEntity> where TEntity : Entity
+    internal sealed class EfDataSet<TEntity> : IDataSet<TEntity> where TEntity : BaseEntity
     {
         private readonly DbSet<TEntity> dbSet;
-
-        public Type ElementType => ((IQueryable<TEntity>)dbSet).ElementType;
-
-        public Expression Expression => ((IQueryable<TEntity>)dbSet).Expression;
-
-        public IQueryProvider Provider => ((IQueryable<TEntity>)dbSet).Provider;
 
         public EfDataSet(DbSet<TEntity> dbSet)
         {
             this.dbSet = dbSet;
         }
 
-        TEntity IDataSet<TEntity>.Find(int id)
+        async Task<TEntity> IDataSet<TEntity>.FindAsync(int id)
         {
-            return dbSet.Find(id);
+            return await dbSet.FindAsync(id);
         }
 
-        void IDataSet<TEntity>.Add(TEntity entity)
+        async Task IDataSet<TEntity>.AddAsync(TEntity entity)
         {
-            dbSet.Add(entity);
+            await dbSet.AddAsync(entity);
         }
 
         void IDataSet<TEntity>.Update(TEntity entity)
@@ -43,14 +37,14 @@ namespace Examples.Data.EntityFrameworkCore
             dbSet.Remove(entity);
         }
 
-        public IEnumerator<TEntity> GetEnumerator()
+        async Task<IReadOnlyCollection<TEntity>> IDataSet<TEntity>.GetAllAsync()
         {
-            return ((IQueryable<TEntity>)dbSet).GetEnumerator();
+            return await dbSet.ToArrayAsync();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        async Task<IReadOnlyCollection<TEntity>> IDataSet<TEntity>.FindAllAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            return ((IEnumerable)dbSet).GetEnumerator();
+            return await dbSet.Where(predicate).ToArrayAsync();
         }
     }
 }

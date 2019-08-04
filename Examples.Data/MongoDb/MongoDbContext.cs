@@ -1,32 +1,24 @@
-﻿using Examples.Data.Entities;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using System.Threading.Tasks;
 
 namespace Examples.Data.MongoDb
 {
-    public class MongoDbContext : IDataContext
+    internal sealed class MongoDbContext : IDataContext
     {
+        private readonly MongoClient client;
         private readonly IMongoDatabase database;
 
-        public MongoDbContext(IOptions<MongoDbOptions> options)
+        public MongoDbContext(string connectionString)
         {
-            var client = new MongoClient(options.Value.ConnectionString);
-            this.database = client.GetDatabase(options.Value.Database);
+            this.client = new MongoClient(connectionString);
+            this.database = client.GetDatabase(MongoUrl.Create(connectionString).DatabaseName);
         }
 
-        public void SaveChanges()
-        {
-        }
+        async Task IDataContext.SaveChangesAsync() => await Task.CompletedTask;
 
-        public IDataSet<TEntity> Set<TEntity>() where TEntity : Entity
+        IDataSet<TEntity> IDataContext.Set<TEntity>()
         {
             return new MongoDbSet<TEntity>(database.GetCollection<TEntity>(typeof(TEntity).Name));
-        }
-
-        public class MongoDbOptions
-        {
-            public string ConnectionString;
-            public string Database;
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Examples.Data.Entities;
+﻿using Examples.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Examples.Data.EntityFrameworkCore
 {
-    public class EfDataContext : DbContext, IDataContext
+    internal sealed class EfDataContext : DbContext, IDataContext
     {
         public DbSet<Example> Examples { get; set; }
 
@@ -12,9 +13,9 @@ namespace Examples.Data.EntityFrameworkCore
             this.Database.EnsureCreated();
         }
 
-        void IDataContext.SaveChanges()
+        async Task IDataContext.SaveChangesAsync()
         {
-            base.SaveChanges();
+            await SaveChangesAsync();
         }
 
         IDataSet<TEntity> IDataContext.Set<TEntity>()

@@ -1,9 +1,8 @@
-﻿using Examples.Data.Entities;
-using Examples.Domain.Models;
+﻿using Examples.Domain.Entities;
 
 namespace Examples.Domain.UseCases
 {
-    public class AddExampleOutput : IOutput
+    public sealed class AddExampleOutput : IOutput
     {
         public ExampleModel AddedExample { get; set; }
 

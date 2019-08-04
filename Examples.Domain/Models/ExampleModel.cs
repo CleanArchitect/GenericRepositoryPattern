@@ -1,7 +1,7 @@
-﻿using System;
-using Examples.Data.Entities;
+﻿using Examples.Domain.Entities;
+using System;
 
-namespace Examples.Domain.Models
+namespace Examples.Domain.UseCases
 {
     public class ExampleModel : BaseModel
     {
@@ -17,11 +17,9 @@ namespace Examples.Domain.Models
 
         public ExampleModel(Example example) : base(example)
         {
-            this.ExampleString = example.ExampleString;
-            this.ExampleDatumStart = example.DatumStart?.ToLocalTime();
-            this.ExampleDatumEinde = example.DatumEinde?.ToLocalTime();
-            this.ExampleBoolean = example.ExampleBoolean;
-            this.ExampleInt = example.ExampleInt;
+            ExampleString = example.ExampleString;
+            ExampleBoolean = example.ExampleBoolean;
+            ExampleInt = example.ExampleInt;
         }
     }
 }
