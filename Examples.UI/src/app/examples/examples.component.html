@@ -1,0 +1,42 @@
+<div style="margin-top: 80px;">
+
+    <div style="margin-bottom: 15px;">
+        <button mat-raised-button color="primary" (click)="openDialog()">Toevoegen</button>
+        <button mat-raised-button color="secondary" (click)="sendToast()">Toast</button>
+    </div>
+
+    <table mat-table [dataSource]="exampleData" class="mat-elevation-z8" *ngIf="exampleData" width="100%">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> Id </th>
+            <td mat-cell *matCellDef="let example"> {{example.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateCreated">
+            <th mat-header-cell *matHeaderCellDef> Datum aangemaakt </th>
+            <td mat-cell *matCellDef="let example"> {{example.dateCreated | date: 'dd-MM-yyyy'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dateLastModified">
+            <th mat-header-cell *matHeaderCellDef> Datum gewijzigd </th>
+            <td mat-cell *matCellDef="let example"> {{example.dateLastModified | date: 'dd-MM-yyyy'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="exampleBoolean">
+            <th mat-header-cell *matHeaderCellDef> Boolean </th>
+            <td mat-cell *matCellDef="let example"> {{example.exampleBoolean}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="exampleString">
+            <th mat-header-cell *matHeaderCellDef> String </th>
+            <td mat-cell *matCellDef="let example"> {{example.exampleString}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="exampleInt">
+            <th mat-header-cell *matHeaderCellDef> Int </th>
+            <td mat-cell *matCellDef="let example"> {{example.exampleInt}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

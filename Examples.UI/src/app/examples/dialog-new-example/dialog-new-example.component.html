@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Nieuw Example</h1>
+
+<div mat-dialog-content [formGroup]="newExampleForm">
+    <mat-form-field>
+        <input matInput formControlName="exampleString" placeholder="String">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput formControlName="exampleInt" placeholder="Int" maxlength="6">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="exampleBoolean" color="primary">Boolean</mat-checkbox>
+</div>
+
+<div mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" (click)="onSave()" cdkFocusInitial>Toevoegen</button>
+    <button mat-button (click)="onCancel()">Annuleren</button>
+</div>
