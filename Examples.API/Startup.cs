@@ -38,9 +38,9 @@ namespace Examples.Presentation.API
             }
 
             // Make sure the CORS middleware is ahead of SignalR.
-            app.UseCors("CorsPolicy");
+            //app.UseCors("CorsPolicy");
             app.UseSignalR(builder => builder.MapHub<ExampleHub>("/exampleHub"));
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
         }
 
@@ -51,14 +51,14 @@ namespace Examples.Presentation.API
 
         private static void ConfigureAspNetCoreServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("http://localhost:4200")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials());
-            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("CorsPolicy",
+            //        builder => builder.WithOrigins("http://localhost:4200")
+            //        .AllowAnyMethod()
+            //        .AllowAnyHeader()
+            //        .AllowCredentials());
+            //});
             services.AddHttpContextAccessor();
             services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

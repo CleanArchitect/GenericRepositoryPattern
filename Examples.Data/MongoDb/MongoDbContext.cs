@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Examples.Domain;
+using MongoDB.Driver;
 using System.Threading.Tasks;
 
 namespace Examples.Data.MongoDb
@@ -14,7 +15,7 @@ namespace Examples.Data.MongoDb
             this.database = client.GetDatabase(MongoUrl.Create(connectionString).DatabaseName);
         }
 
-        async Task IDataContext.SaveChangesAsync() => await Task.CompletedTask;
+        async Task IUnitOfWork.SaveChangesAsync() => await Task.CompletedTask;
 
         IDataSet<TEntity> IDataContext.Set<TEntity>()
         {

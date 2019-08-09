@@ -22,6 +22,8 @@ namespace Examples.Domain.UseCases
             
             await exampleRepository.AddAsync(newExample);
 
+            await exampleRepository.UnitOfWork.SaveChangesAsync();
+
             return new AddExampleOutput(newExample);
         }
     }

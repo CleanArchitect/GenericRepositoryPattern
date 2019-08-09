@@ -28,6 +28,8 @@ namespace Examples.Domain.UseCases
 
             await exampleRepository.UpdateAsync(existingExample);
 
+            await exampleRepository.UnitOfWork.SaveChangesAsync();
+
             return new UpdateExampleOutput();
         }
     }

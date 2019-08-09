@@ -9,7 +9,11 @@ namespace Examples.Data
         private readonly IDataContext context;
         private readonly IAuthService authService;
 
-        public ReadWriteRepository(IDataContext context, IAuthService authService) : base (context)
+        IUnitOfWork IReadWriteRepository<TEntity>.UnitOfWork => context;
+
+        public ReadWriteRepository(
+            IDataContext context, 
+            IAuthService authService) : base (context)
         {
             this.context = context;
             this.authService = authService;
@@ -21,13 +25,11 @@ namespace Examples.Data
             entity.CreatedBy = authService.Identity.Name;
 
             await context.Set<TEntity>().AddAsync(entity);
-            await context.SaveChangesAsync();
         }
 
         async Task IReadWriteRepository<TEntity>.RemoveAsync(TEntity entity)
         {
-            context.Set<TEntity>().Remove(entity);
-            await context.SaveChangesAsync();
+            await Task.Run(() => context.Set<TEntity>().Remove(entity));
         }
 
         async Task IReadWriteRepository<TEntity>.UpdateAsync(TEntity entity)
@@ -35,8 +37,7 @@ namespace Examples.Data
             entity.DateModified = DateTime.Now;
             entity.ModifiedBy = authService.Identity.Name;
 
-            context.Set<TEntity>().Update(entity);
-            await context.SaveChangesAsync();
+            await Task.Run(() => context.Set<TEntity>().Update(entity));
         }
     }
 }
