@@ -15,7 +15,7 @@ Voorbeeld voorheen
 De 'oplossing' (huidig)     
 1 assembly scanning
 2 extension methods + fromservices
-3 registratie per project
+3 registratie per project + geen transitive dependencies
 
 Voorbeeld:
 API.Startup.ConfigureServices
@@ -24,7 +24,7 @@ API.Startup.ConfigureServices
 	AddDbcontext
    UseCases.Startup.ConfigureServices
 	AddInputPorts -> scan IInputPort<> (1)
-	AddOutputPorts -> add IOutputPort<> (1)
+	AddOutputPorts -> open IOutputPort<> (1)
 
 Tips:
 - fromservices
