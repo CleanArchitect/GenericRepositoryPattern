@@ -1,0 +1,35 @@
+Intro DI
+
+De 'problemen' (voorheen)
+1 automatisering? (iedere service handmatig registreren)
+2 bulky controllers (registratie per controller + grote constructors)
+3 nothing is private (alle registraties via 1 project)
+
+Voorbeeld voorheen
+  Controller
+  - injector method
+  - constructor
+  Startup
+  - controller.injector
+
+De 'oplossing' (huidig)     
+1 assembly scanning
+2 extension methods + fromservices
+3 registratie per project
+
+Voorbeeld:
+API.Startup.ConfigureServices
+   Gateways.Startup.ConfigureServices
+	AddGateways -> scan IGateway (1)
+	AddDbcontext
+   UseCases.Startup.ConfigureServices
+	AddInputPorts -> scan IInputPort<> (1)
+	AddOutputPorts -> add IOutputPort<> (1)
+
+Tips:
+- fromservices
+- open generics
+- references: PrivateAssets="All" (nuget packages/entities)
+
+
+
